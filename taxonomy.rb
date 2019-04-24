@@ -1,6 +1,7 @@
 require 'bundler/setup'
 Bundler.require
 require 'active_support/core_ext/string'
+require 'pry'
 
 class Taxonomy
   def initialize
@@ -23,6 +24,7 @@ class Taxonomy
 
   def writeFile
     File.open(@file_output, "w") do |f|
+      @rows = @rows.select(&:present?)
       @rows.each do |row|
         f.puts(row)
         f.write "\n"
@@ -56,7 +58,7 @@ class Taxonomy
     else
       row_tmp = filter_special_symbol(row)
       row = filter_special_name(row.squish)
-      @rows << "#{wikify(row_tmp)} = Category.create(name: '#{row}')"
+      @rows << ["#{wikify(row_tmp)} = Category.create(name: '#{row}')"]
     end
   end
 
@@ -66,6 +68,7 @@ class Taxonomy
     parent.each_with_index do |item, index|
       item = filter_special_name(item.squish)
       item_tmp = filter_special_symbol(item)
+      next if 2 <= index
       if index == 0
         parent_name = wikify(item_tmp)
         parent_tmp = "#{parent_name} = Category.create(name: '#{item}')"
