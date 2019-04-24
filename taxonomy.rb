@@ -68,10 +68,12 @@ class Taxonomy
       item_tmp = filter_special_symbol(item)
       if index == 0
         parent_name = wikify(item_tmp)
-        tmp << "#{parent_name} = Category.create(name: '#{item}')"
+        parent_tmp = "#{parent_name} = Category.create(name: '#{item}')"
+        tmp << parent_tmp if !@rows.flatten.include?(parent_tmp)
       else
         parent_child_name = wikify(item_tmp)
-        tmp << "#{parent_child_name} = Category.create(name: '#{item}', parent: #{parent_name})"
+        parent_child_tmp = "#{parent_child_name} = Category.create(name: '#{item}', parent: #{parent_name})"
+        tmp << parent_child_tmp if !@rows.flatten.include?(parent_child_tmp)
         parent_name = parent_child_name
       end
     end
