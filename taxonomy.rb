@@ -7,12 +7,15 @@ class Taxonomy
   def initialize
     @file = ARGV[0]
     @file_output = ARGV[1]
+    @limit = ARGV[2].to_i
     @rows = []
   end
 
   def execute
+    puts "Starting convert data #{Time.now.strftime('%Y-%d-%m %H:%M:%S %Z')}"
     readFile
     writeFile
+    puts "Finished #{Time.now.strftime('%Y-%d-%m %H:%M:%S %Z')}"
   end
 
   def readFile
@@ -38,7 +41,9 @@ class Taxonomy
   # get Animals & Pet Supplies
   def row_filter(row)
     row = row.strip.gsub(/\s+/, " ")
-    row.split(" - ").last
+    item = row.split(" - ")
+    puts "Start reading and convert #{item.first}"
+    item.last
   end
 
   def filter_special_symbol(row)
@@ -68,7 +73,7 @@ class Taxonomy
     parent.each_with_index do |item, index|
       item = filter_special_name(item.squish)
       item_tmp = filter_special_symbol(item)
-      next if 2 <= index
+      next if @limit <= index
       if index == 0
         parent_name = wikify(item_tmp)
         parent_tmp = "#{parent_name} = Category.create(name: '#{item}')"
