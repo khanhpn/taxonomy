@@ -40,17 +40,18 @@ class Main
   end
 
   def layer_one(datas)
-    datas.each do |data|
+    datas[0].each do |data|
       puts "#{@index}. #{data}"
       @index += 1
     end
   end
 
   def layer_more(datas)
-    (0...datas.size).each do |item|
-      datas[item].each do |item1|
-        binding.pry
-      end
+    arr_tmp = datas.inject(&:product).map(&:flatten)
+    puts "#{datas}"
+    arr_tmp.each do |item|
+      puts "#{@index}. #{item.join(' / ')}"
+      @index += 1
     end
   end
 end
